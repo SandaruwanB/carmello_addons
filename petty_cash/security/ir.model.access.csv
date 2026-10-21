@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_petty_cash_reason,access_petty_cash_reason,model_petty_cash_reason,base.group_user,1,1,1,1
+access_petty_cash,access_petty_cash,model_petty_cash,base.group_user,1,1,1,1
+access_petty_cash_line,access_petty_cash_line,model_petty_cash_line,base.group_user,1,1,1,1
+access_petty_cash_in,access_petty_cash_in,model_petty_cash_in,base.group_user,1,1,1,1
+access_petty_cash_release,access_petty_cash_release,model_petty_cash_release,base.group_user,1,1,1,1
+access_petty_cash_release_line,access_petty_cash_release_line,model_petty_cash_release_line,base.group_user,1,1,1,1
+access_petty_cash_out,access_petty_cash_out,model_petty_cash_out,base.group_user,1,1,1,1
+access_petty_cash_out_line,access_petty_cash_out_line,model_petty_cash_out_line,base.group_user,1,1,1,1
+access_petty_cash_approver_user_wizard,access_petty_cash_approver_user_wizard,model_petty_cash_approver_user_wizard,base.group_user,1,1,1,1
+access_petty_cash_approved_comment_wizard,access_petty_cash_approved_comment_wizard,model_petty_cash_approved_comment_wizard,base.group_user,1,1,1,1
+access_petty_cash_balance_wizard,access_petty_cash_balance_wizard,model_petty_cash_balance_wizard,base.group_user,1,1,1,1
+access_petty_cash_draft_reason,access_petty_cash_draft_reason,model_petty_cash_draft_reason,base.group_user,1,1,1,1

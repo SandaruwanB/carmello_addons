@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_main_bank,access_main_bank,model_main_bank,base.group_user,1,1,1,1
+access_payment_mode,access_payment_mode,model_payment_mode,base.group_user,1,1,1,1
+access_pdc_wizard,access_pdc_wizard,model_pdc_wizard,base.group_user,1,1,1,1
+access_account_receipt_payment,access_account_receipt_payment,model_account_receipt_payment,base.group_user,1,1,1,1
+access_temp_account_move,access_temp_account_move,model_temp_account_move,base.group_user,1,1,1,1
+access_pdc_register_warning_wizard,access_pdc_register_warning_wizard,model_pdc_register_warning_wizard,base.group_user,1,1,1,1

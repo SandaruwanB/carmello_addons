@@ -1,0 +1,260 @@
+/* ==========================================================================
+   Carmelo POS Receipt - Clean & Modern Compact Styling
+   ========================================================================== */
+
+/* 1. Base Receipt Typography & Spacing */
+.pos-receipt,
+.pos-receipt-print {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    line-height: 1.3 !important;
+    color: #1a1a1a !important;
+    padding: 0.4rem !important;
+}
+
+/* Remove raw <br/> tags to eliminate awkward blank gaps */
+.pos-receipt br,
+.pos-receipt-print br {
+    display: none !important;
+}
+
+/* 2. Logo & Header */
+.pos-receipt .pos-receipt-logo,
+.pos-receipt-print .pos-receipt-logo {
+    max-width: 120px !important;
+    max-height: 55px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto 0.3rem auto !important;
+}
+
+.pos-receipt .pos-receipt-contact,
+.pos-receipt-print .pos-receipt-contact {
+    text-align: center !important;
+    font-size: 80% !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.35rem !important;
+}
+
+/* Store / Company Name */
+.pos-receipt .pos-receipt-contact > div:first-child,
+.pos-receipt-print .pos-receipt-contact > div:first-child {
+    font-weight: 700 !important;
+    font-size: 1.25em !important;
+    color: #000000 !important;
+    letter-spacing: 0.02em !important;
+    margin-bottom: 0.2rem !important;
+    text-transform: uppercase !important;
+}
+
+/* Cashier */
+.pos-receipt .cashier,
+.pos-receipt-print .cashier {
+    margin-top: 0.25rem !important;
+    padding-top: 0.2rem !important;
+    font-size: 0.9em !important;
+    opacity: 0.85 !important;
+}
+
+/* 3. Dividers */
+.pos-receipt .text-center,
+.pos-receipt-print .text-center {
+    letter-spacing: 0.05em !important;
+    color: #888888 !important;
+    margin: 0.2rem 0 !important;
+    line-height: 1.1 !important;
+}
+
+/* 4. Product Lines (Orderlines) */
+.pos-receipt .orderline,
+.pos-receipt-print .orderline {
+    padding-top: 0.2rem !important;
+    padding-bottom: 0.2rem !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-bottom: 1px dashed #ececec !important;
+    gap: 0.15rem !important;
+}
+
+.pos-receipt .orderline:last-child,
+.pos-receipt-print .orderline:last-child {
+    border-bottom: none !important;
+}
+
+.pos-receipt .orderline .product-name,
+.pos-receipt-print .orderline .product-name {
+    font-size: 0.95em !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    color: #111111 !important;
+}
+
+.pos-receipt .orderline .price,
+.pos-receipt-print .orderline .price {
+    font-size: 0.95em !important;
+    font-weight: 700 !important;
+    color: #111111 !important;
+}
+
+.pos-receipt .orderline .info-list,
+.pos-receipt-print .orderline .info-list {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.pos-receipt .orderline .price-per-unit,
+.pos-receipt-print .orderline .price-per-unit {
+    font-size: 0.82em !important;
+    color: #555555 !important;
+    line-height: 1.2 !important;
+}
+
+.pos-receipt .orderline .qty,
+.pos-receipt-print .orderline .qty {
+    padding: 0 0.25rem !important;
+    font-size: 0.85em !important;
+    border-radius: 3px !important;
+    border-color: #ddd !important;
+}
+
+/* 5. Totals & Payment Summary */
+.pos-receipt .pos-receipt-amount,
+.pos-receipt-print .pos-receipt-amount {
+    font-size: 0.95em !important;
+    padding: 0.15rem 0 !important;
+    line-height: 1.3 !important;
+}
+
+/* Total Section Highlight */
+.pos-receipt .receipt-total,
+.pos-receipt-print .receipt-total {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 1.25em !important;
+    font-weight: 800 !important;
+    color: #000000 !important;
+    padding: 0.35rem 0 !important;
+    margin: 0.3rem 0 !important;
+    border-top: 1.5px solid #222222 !important;
+    border-bottom: 1.5px solid #222222 !important;
+    clear: both !important;
+    width: 100% !important;
+}
+
+.pos-receipt .receipt-total > .pos-receipt-right-align,
+.pos-receipt-print .receipt-total > .pos-receipt-right-align {
+    float: none !important;
+    font-weight: 800 !important;
+}
+
+.pos-receipt .pos-receipt-taxes,
+.pos-receipt-print .pos-receipt-taxes {
+    font-size: 0.82em !important;
+    opacity: 0.9 !important;
+    padding: 0.15rem 0 !important;
+}
+
+.pos-receipt .paymentlines,
+.pos-receipt-print .paymentlines {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 0.9em !important;
+    padding: 0.12rem 0 !important;
+    clear: both !important;
+    width: 100% !important;
+}
+
+.pos-receipt .paymentlines > .pos-receipt-right-align,
+.pos-receipt-print .paymentlines > .pos-receipt-right-align {
+    float: none !important;
+}
+
+.pos-receipt .receipt-change,
+.pos-receipt-print .receipt-change {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 0.95em !important;
+    font-weight: 600 !important;
+    padding: 0.2rem 0 !important;
+    border-bottom: 1px dashed #cccccc !important;
+    clear: both !important;
+    width: 100% !important;
+}
+
+.pos-receipt .receipt-change > .pos-receipt-right-align,
+.pos-receipt-print .receipt-change > .pos-receipt-right-align {
+    float: none !important;
+}
+
+/* 6. Customer & Loyalty Details (before-footer) */
+.pos-receipt .before-footer,
+.pos-receipt-print .before-footer {
+    clear: both !important;
+    display: block !important;
+    width: 100% !important;
+    margin-top: 0.35rem !important;
+    margin-bottom: 0.35rem !important;
+}
+
+.pos-receipt .before-footer > div,
+.pos-receipt-print .before-footer > div {
+    display: block !important;
+    text-align: left !important;
+    font-size: 0.82em !important;
+    color: #333333 !important;
+    margin-top: 0.3rem !important;
+    margin-bottom: 0.3rem !important;
+    padding: 0.1rem 0 !important;
+    clear: both !important;
+    width: 100% !important;
+    line-height: 1.35 !important;
+}
+
+.pos-receipt .before-footer > div > .pos-receipt-right-align,
+.pos-receipt-print .before-footer > div > .pos-receipt-right-align {
+    float: none !important;
+    display: inline !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+    color: #111111 !important;
+    margin-left: 0.25rem !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+}
+
+/* Clearfix guarantee */
+.pos-receipt div:has(> .pos-receipt-right-align),
+.pos-receipt-print div:has(> .pos-receipt-right-align) {
+    clear: both !important;
+}
+
+/* 7. Order Reference & Date */
+.pos-receipt .pos-receipt-order-data,
+.pos-receipt-print .pos-receipt-order-data {
+    clear: both !important;
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 78% !important;
+    color: #444444 !important;
+    line-height: 1.35 !important;
+    margin-top: 0.45rem !important;
+    margin-bottom: 0.2rem !important;
+}
+
+/* 8. Thank You Greeting */
+.pos-receipt-thank-you {
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 1.15em !important;
+    color: #111111 !important;
+    letter-spacing: 0.03em !important;
+    margin-top: 0.5rem !important;
+    padding-top: 0.35rem !important;
+    border-top: 1px dashed #999999 !important;
+    clear: both !important;
+}

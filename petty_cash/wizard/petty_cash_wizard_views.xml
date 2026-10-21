@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_petty_cash_approver_user_wizard_form" model="ir.ui.view">
+        <field name="name">petty.cash.approver.user.wizard.form</field>
+        <field name="model">petty.cash.approver.user.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Send to Approval">
+                <sheet>
+                    <h2 class="mb-3">Select an Approver</h2>
+                    <group>
+                        <group>
+                            <field name="user_id" widget="selection" required="1"/>
+                            <field name="model_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Submit" name="approval_submission" type="object" class="btn-primary"/>
+                    <button string="Abort" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_petty_cash_approved_comment_wizard_form" model="ir.ui.view">
+        <field name="name">petty.cash.approved.comment.wizard.form</field>
+        <field name="model">petty.cash.approved.comment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Approval">
+                <sheet>
+                    <h2 class="mb-3">Approve with Comments</h2>
+                    <group>
+                        <group>
+                            <field name="user_id" widget="selection" readonly="1" force_save="1"/>
+                            <field name="approver_comment" placeholder="Add approval remarks..."/>
+                            <field name="model_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Submit" name="approval_submission" type="object" class="btn-primary"/>
+                    <button string="Abort" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_petty_cash_balance_wizard_form" model="ir.ui.view">
+        <field name="name">petty.cash.balance.wizard.form</field>
+        <field name="model">petty.cash.balance.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Return Petty Cash Balance">
+                <sheet>
+                    <h2 class="mb-3">Return Petty Cash Balance</h2>
+                    <group>
+                        <group string="Drawer Info">
+                            <field name="user_id" widget="selection" readonly="1" force_save="1"/>
+                            <field name="petty_cash_id" readonly="1" force_save="1"/>
+                            <field name="journal_id" readonly="1" force_save="1"/>
+                        </group>
+                        <group string="Return Details">
+                            <field name="cash_balance" readonly="1" force_save="1" widget="monetary"/>
+                            <field name="return_journal" required="1" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="note" placeholder="Notes / Remarks"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Submit" name="approval_submission" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_petty_cash_draft_reason_wizard_form" model="ir.ui.view">
+        <field name="name">petty.cash.draft.reason.wizard.form</field>
+        <field name="model">petty.cash.draft.reason</field>
+        <field name="arch" type="xml">
+            <form string="Set To Draft Reason">
+                <sheet>
+                    <h2 class="mb-3">Reason for Resetting to Draft</h2>
+                    <group>
+                        <group>
+                            <field name="user_id" widget="selection" readonly="1" force_save="1"/>
+                            <field name="cancel_reason" required="1" placeholder="Reason for cancellation / draft reset"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Submit" name="approval_submission" type="object" class="btn-primary"/>
+                    <button string="Abort" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

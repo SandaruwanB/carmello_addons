@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_move_form_inherit_carmelo_pdc" model="ir.ui.view">
+            <field name="name">account.move.form.inherit.carmelo.pdc</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_view_pdc_payments"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-money"
+                            invisible="pdc_payment_count == 0">
+                        <field name="pdc_payment_count" widget="statinfo" string="PDC Cheques"/>
+                    </button>
+                </xpath>
+
+                <xpath expr="//header" position="inside">
+                    <field name="amount_residual" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//button[@id='account_invoice_payment_secondary_btn']" position="after">
+                    <button name="action_register_pdc"
+                            type="object"
+                            string="Register PDC"
+                            class="oe_highlight"
+                            invisible="state != 'posted' or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund') or amount_residual == 0"/>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page string="PDC Cheques" name="page_pdc_cheques" invisible="pdc_payment_count == 0">
+                        <field name="pdc_payment_ids" readonly="1">
+                            <list string="PDC Cheques">
+                                <field name="name"/>
+                                <field name="reference" string="Cheque No"/>
+                                <field name="main_bank_id" string="Bank"/>
+                                <field name="bank_id" string="Branch"/>
+                                <field name="payment_amount" sum="Total Amount" widget="monetary"/>
+                                <field name="currency_id" column_invisible="True"/>
+                                <field name="payment_date"/>
+                                <field name="due_date"/>
+                                <field name="state" widget="badge" decoration-info="state in ('draft', 'deposited')" decoration-warning="state in ('confirmed', 'returned')" decoration-primary="state in ('approved', 'registered')" decoration-success="state == 'done'" decoration-danger="state == 'bounced'" decoration-muted="state == 'cancel'"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

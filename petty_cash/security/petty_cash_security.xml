@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Categories -->
+    <record id="module_category_petty_cash" model="ir.module.category">
+        <field name="name">Petty Cash</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="petty_cash_security_category" model="ir.module.category">
+        <field name="name">Petty Cash</field>
+        <field name="parent_id" ref="module_category_petty_cash"/>
+    </record>
+
+    <!-- Groups -->
+    <record id="petty_cash_group_user_own" model="res.groups">
+        <field name="name">User: OWN request</field>
+        <field name="category_id" ref="petty_cash_security_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="petty_cash_group_user_all" model="res.groups">
+        <field name="name">User: All</field>
+        <field name="category_id" ref="petty_cash_security_category"/>
+        <field name="implied_ids" eval="[(4, ref('petty_cash_group_user_own'))]"/>
+    </record>
+
+    <record id="petty_cash_group_assistant" model="res.groups">
+        <field name="name">Assistant</field>
+        <field name="category_id" ref="petty_cash_security_category"/>
+        <field name="implied_ids" eval="[(4, ref('petty_cash_group_user_all'))]"/>
+    </record>
+
+    <record id="petty_cash_group_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="petty_cash_security_category"/>
+        <field name="implied_ids" eval="[(4, ref('petty_cash_group_assistant'))]"/>
+    </record>
+
+    <!-- Record Rules -->
+    <record id="petty_cash_personal_cash_iou_req" model="ir.rule">
+        <field name="name">Petty cash IOU Request: Own User</field>
+        <field name="model_id" ref="model_petty_cash_release"/>
+        <field name="domain_force">['|',('user_id','=',user.id),('user_id','=',False)]</field>
+        <field name="groups" eval="[(4, ref('petty_cash_group_user_own'))]"/>
+    </record>
+
+    <record id="petty_cash_all_cash_iou_req" model="ir.rule">
+        <field name="name">Petty cash IOU Request: All User</field>
+        <field name="model_id" ref="model_petty_cash_release"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('petty_cash_group_user_all'))]"/>
+    </record>
+
+    <record id="petty_cash_personal_cash_out" model="ir.rule">
+        <field name="name">Petty cash Out: Own User</field>
+        <field name="model_id" ref="model_petty_cash_out"/>
+        <field name="domain_force">['|',('user_id','=',user.id),('user_id','=',False)]</field>
+        <field name="groups" eval="[(4, ref('petty_cash_group_user_own'))]"/>
+    </record>
+
+    <record id="petty_cash_all_user_cash_out" model="ir.rule">
+        <field name="name">Petty cash Out: All User</field>
+        <field name="model_id" ref="model_petty_cash_out"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('petty_cash_group_user_all'))]"/>
+    </record>
+
+    <!-- Multi-Company Rules -->
+    <record id="petty_cash_multi_company" model="ir.rule">
+        <field name="name">petty Cash drawer Multi-Company</field>
+        <field name="model_id" ref="model_petty_cash"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="petty_cash_in_multi_company" model="ir.rule">
+        <field name="name">petty Cash topup Multi-Company</field>
+        <field name="model_id" ref="model_petty_cash_in"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="petty_cash_release_multi_company" model="ir.rule">
+        <field name="name">petty Cash IOU Request Multi-Company</field>
+        <field name="model_id" ref="model_petty_cash_release"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="petty_cash_out_multi_company" model="ir.rule">
+        <field name="name">petty Cash out Multi-Company</field>
+        <field name="model_id" ref="model_petty_cash_out"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+</odoo>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top-Level Root Menu (Dashboard App Switcher) -->
+    <menuitem id="petty_cash_main_menu"
+              name="Petty Cash"
+              web_icon="petty_cash,static/description/icon.png"
+              sequence="41"/>
+
+    <!-- Actions -->
+    <record id="action_petty_cash" model="ir.actions.act_window">
+        <field name="name">Petty Cash Drawer</field>
+        <field name="res_model">petty.cash</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Petty Cash Drawer
+            </p>
+        </field>
+    </record>
+
+    <record id="action_petty_cash_in" model="ir.actions.act_window">
+        <field name="name">Top Up</field>
+        <field name="res_model">petty.cash.in</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_petty_cash_release" model="ir.actions.act_window">
+        <field name="name">IOU Request</field>
+        <field name="res_model">petty.cash.release</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_petty_cash_out" model="ir.actions.act_window">
+        <field name="name">Reimbursement</field>
+        <field name="res_model">petty.cash.out</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_hr_employee_petty_cash" model="ir.actions.act_window">
+        <field name="name">Employee Wise Report</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_petty_cash_reason" model="ir.actions.act_window">
+        <field name="name">Reimbursement Reason</field>
+        <field name="res_model">petty.cash.reason</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Submenus -->
+    <!-- 1. Petty Cash Drawer Menu -->
+    <menuitem id="petty_cash_petty_cash_menu"
+              name="Petty Cash Drawer"
+              parent="petty_cash_main_menu"
+              action="action_petty_cash"
+              sequence="1"/>
+
+    <!-- 2. Operations & Reports Menu -->
+    <menuitem id="petty_cash_report_menu"
+              name="Operations &amp; Reports"
+              parent="petty_cash_main_menu"
+              sequence="2"/>
+
+    <menuitem id="petty_cash_petty_cash_in_menu"
+              name="Top Up"
+              parent="petty_cash_report_menu"
+              action="action_petty_cash_in"
+              sequence="1"/>
+
+    <menuitem id="petty_cash_cash_out_menu"
+              name="IOU Request"
+              parent="petty_cash_report_menu"
+              action="action_petty_cash_release"
+              sequence="2"/>
+
+    <menuitem id="petty_cash_petty_cash_out_menu"
+              name="Reimbursement"
+              parent="petty_cash_report_menu"
+              action="action_petty_cash_out"
+              sequence="3"/>
+
+    <menuitem id="petty_cash_employee_menu"
+              name="Employee Wise Report"
+              parent="petty_cash_report_menu"
+              action="action_hr_employee_petty_cash"
+              sequence="5"/>
+
+    <!-- 3. Configurations Menu -->
+    <menuitem id="petty_cash_configurations_menu"
+              name="Configurations"
+              parent="petty_cash_main_menu"
+              sequence="10"/>
+
+    <menuitem id="petty_cash_petty_cash_reason_menu"
+              name="Reimbursement Reason"
+              parent="petty_cash_configurations_menu"
+              action="action_petty_cash_reason"
+              sequence="1"/>
+</odoo>

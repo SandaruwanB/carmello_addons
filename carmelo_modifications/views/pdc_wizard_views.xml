@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pdc_wizard_tree" model="ir.ui.view">
+            <field name="name">pdc.wizard.list</field>
+            <field name="model">pdc.wizard</field>
+            <field name="arch" type="xml">
+                <list string="PDC Cheques">
+                    <field name="name"/>
+                    <field name="reference" string="Cheque No"/>
+                    <field name="partner_id"/>
+                    <field name="payment_type"/>
+                    <field name="payment_amount" sum="Total Amount" widget="monetary"/>
+                    <field name="currency_id" column_invisible="True"/>
+                    <field name="payment_date"/>
+                    <field name="due_date"/>
+                    <field name="main_bank_id" string="Bank"/>
+                    <field name="bank_id" string="Branch"/>
+                    <field name="invoice_id"/>
+                    <field name="state" widget="badge" decoration-info="state in ('draft', 'deposited')" decoration-warning="state in ('confirmed', 'returned')" decoration-primary="state in ('approved', 'registered')" decoration-success="state == 'done'" decoration-danger="state == 'bounced'" decoration-muted="state == 'cancel'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_pdc_wizard_form" model="ir.ui.view">
+            <field name="name">pdc.wizard.form</field>
+            <field name="model">pdc.wizard</field>
+            <field name="arch" type="xml">
+                <form string="PDC Cheque">
+                    <header>
+                        <button name="button_confirm" string="Confirm" class="oe_highlight" type="object" invisible="state != 'draft'"/>
+                        <button name="button_approve" string="Approve" class="oe_highlight" type="object" groups="carmelo_modifications.group_pdc_manager,account.group_account_manager" invisible="state != 'confirmed'"/>
+                        <button name="button_reject" string="Reject" type="object" groups="carmelo_modifications.group_pdc_manager,account.group_account_manager" invisible="state != 'confirmed'"/>
+                        <button name="button_register" string="Register" class="oe_highlight" type="object" invisible="state != 'approved'"/>
+                        <button name="button_deposit" string="Deposit to Bank" class="oe_highlight" type="object" invisible="state != 'registered'"/>
+                        <button name="button_done" string="Clear / Done" class="btn-success" type="object" invisible="state != 'deposited'"/>
+                        <button name="button_bounced" string="Bounced" class="btn-danger" type="object" invisible="state not in ('registered', 'deposited')"/>
+                        <button name="button_return" string="Return Cheque" type="object" invisible="state not in ('confirmed', 'approved', 'registered', 'deposited', 'bounced')"/>
+                        <button name="button_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancel')"/>
+                        <button name="button_draft" string="Reset to Draft" type="object" invisible="state not in ('cancel', 'returned', 'bounced')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approved,registered,deposited,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="open_journal_items" type="object" class="oe_stat_button" icon="fa-bars" string="Journal Items"/>
+                            <button name="open_journal_entry" type="object" class="oe_stat_button" icon="fa-book" string="Journal Entry"/>
+                            <button name="open_invoices" type="object" class="oe_stat_button" icon="fa-pencil-square-o" string="Invoice/Bill" invisible="not invoice_id"/>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Cheque Details">
+                                <field name="partner_id" required="1" readonly="state != 'draft'"/>
+                                <field name="payment_type" widget="radio" options="{'horizontal': true}" readonly="state != 'draft'"/>
+                                <field name="reference" string="Cheque Number" required="1" readonly="state != 'draft'"/>
+                                <field name="payment_amount" required="1" widget="monetary" readonly="state != 'draft'"/>
+                                <field name="currency_id" groups="base.group_multi_currency" readonly="state != 'draft'"/>
+                                <field name="check_amount_in_words" readonly="1"/>
+                                <field name="invoice_id" readonly="state != 'draft'"/>
+                            </group>
+                            <group string="Dates &amp; Bank Info">
+                                <field name="payment_date" readonly="state != 'draft'"/>
+                                <field name="due_date" required="1" readonly="state != 'draft'"/>
+                                <field name="main_bank_id" string="Cheque Bank" required="1" readonly="state != 'draft'"/>
+                                <field name="bank_id" string="Branch" domain="[('main_bank_id', '=', main_bank_id)]" readonly="state != 'draft'"/>
+                                <field name="partner_bank_account_id" string="Partner Account No" readonly="state != 'draft'"/>
+                                <field name="journal_id" string="Payment Journal" domain="[('type', '=', 'bank')]" readonly="state in ('registered', 'deposited', 'done', 'cancel')"/>
+                                <field name="available_payment_method_line_ids" invisible="1"/>
+                                <field name="payment_method_line_id" string="Payment Method" readonly="state in ('registered', 'deposited', 'done', 'cancel')" invisible="not journal_id"/>
+                                <field name="payment_id" string="Payment Entry" readonly="1" invisible="not payment_id"/>
+                                <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Approval &amp; Audit Info" name="approval_info">
+                                <group>
+                                    <group string="Approval Audit Log" invisible="not approved_by and not approve_Date">
+                                        <field name="approved_by" readonly="1"/>
+                                        <field name="approve_Date" readonly="1"/>
+                                        <field name="comment" readonly="state not in ('draft', 'confirmed')"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Memo &amp; Notes" name="notes">
+                                <field name="memo" placeholder="Add optional memo or notes about this cheque..." readonly="state == 'done'"/>
+                            </page>
+                            <page string="Cheque Images" name="attachments">
+                                <field name="attachment_ids" widget="many2many_binary" string="Attach Cheque Scans/Photos"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter reload_on_attachment="True"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_pdc_wizard_search" model="ir.ui.view">
+            <field name="name">pdc.wizard.search</field>
+            <field name="model">pdc.wizard</field>
+            <field name="arch" type="xml">
+                <search string="Search PDC Cheques">
+                    <field name="name"/>
+                    <field name="reference" string="Cheque No"/>
+                    <field name="partner_id"/>
+                    <field name="main_bank_id" string="Bank"/>
+                    <field name="invoice_id"/>
+                    <separator/>
+                    <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                    <filter name="filter_approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                    <filter name="filter_registered" string="Registered" domain="[('state', '=', 'registered')]"/>
+                    <filter name="filter_deposited" string="Deposited" domain="[('state', '=', 'deposited')]"/>
+                    <filter name="filter_done" string="Done / Cleared" domain="[('state', '=', 'done')]"/>
+                    <separator/>
+                    <filter name="filter_returned" string="Returned" domain="[('state', '=', 'returned')]"/>
+                    <filter name="filter_bounced" string="Bounced" domain="[('state', '=', 'bounced')]"/>
+                    <filter name="filter_cancel" string="Cancelled" domain="[('state', '=', 'cancel')]"/>
+                    <separator/>
+                    <filter name="filter_inbound" string="Customer Cheques (Receive)" domain="[('payment_type', '=', 'receive_money')]"/>
+                    <filter name="filter_outbound" string="Vendor Cheques (Send)" domain="[('payment_type', '=', 'send_money')]"/>
+                    <separator/>
+                    <filter name="filter_overdue" string="Overdue Cheques" domain="[('due_date', '&lt;', context_today().strftime('%Y-%m-%d')), ('state', 'in', ('confirmed', 'approved', 'registered', 'deposited'))]"/>
+                    <filter name="filter_due_today" string="Due Today" domain="[('due_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_partner" string="Partner" context="{'group_by': 'partner_id'}"/>
+                        <filter name="group_bank" string="Bank" context="{'group_by': 'main_bank_id'}"/>
+                        <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                        <filter name="group_due_date" string="Due Date" context="{'group_by': 'due_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_pdc_cheque_inbound" model="ir.actions.act_window">
+            <field name="name">PDC Customer Cheques</field>
+            <field name="res_model">pdc.wizard</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('payment_type', '=', 'receive_money')]</field>
+            <field name="context">{'default_payment_type': 'receive_money', 'search_default_filter_inbound': 1}</field>
+            <field name="search_view_id" ref="view_pdc_wizard_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Register a new PDC Customer Cheque
+                </p>
+                <p>
+                    Track received post dated cheques from customers, manage deposits, approvals, and clearing.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_pdc_cheque_outbound" model="ir.actions.act_window">
+            <field name="name">PDC Vendor Cheques</field>
+            <field name="res_model">pdc.wizard</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('payment_type', '=', 'send_money')]</field>
+            <field name="context">{'default_payment_type': 'send_money', 'search_default_filter_outbound': 1}</field>
+            <field name="search_view_id" ref="view_pdc_wizard_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Register a new PDC Vendor Cheque
+                </p>
+                <p>
+                    Track issued post dated cheques to vendors.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_pdc_cheque_all" model="ir.actions.act_window">
+            <field name="name">All PDC Cheques</field>
+            <field name="res_model">pdc.wizard</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_pdc_wizard_search"/>
+        </record>
+
+        <menuitem id="menu_pdc_customer_cheques"
+                  name="PDC Customer Cheques"
+                  parent="account.menu_finance_receivables"
+                  action="action_pdc_cheque_inbound"
+                  sequence="16"/>
+
+        <menuitem id="menu_pdc_vendor_payments"
+                  name="PDC Vendor Cheques"
+                  parent="account.menu_finance_payables"
+                  action="action_pdc_cheque_outbound"
+                  sequence="21"/>
+
+        <!-- Overpayment / Settled Invoice Warning Wizard View -->
+        <record id="view_pdc_register_warning_wizard_form" model="ir.ui.view">
+            <field name="name">pdc.register.warning.wizard.form</field>
+            <field name="model">pdc.register.warning.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Confirmation: Invoice Settle / Overpayment Warning">
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="fa fa-exclamation-triangle fa-2x me-3 text-warning"/>
+                        <div>
+                            <field name="message" readonly="1" nolabel="1" class="text-wrap fs-6"/>
+                        </div>
+                    </div>
+                    <footer>
+                        <button string="Proceed Anyway" name="action_proceed" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

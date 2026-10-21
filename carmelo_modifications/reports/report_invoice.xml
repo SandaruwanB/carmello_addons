@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_account_invoice_inherited_carmelo" inherit_id="account.report_invoice_document" priority="20">
+        <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+            <t t-if="o._is_vat_invoice()">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: black; line-height: 1.35; padding: 10px;">
+                        <style>
+                            .tax-inv-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                border: 1px solid #000;
+                                margin-bottom: 8px;
+                            }
+                            .tax-inv-table td, .tax-inv-table th {
+                                border: 1px solid #000;
+                                padding: 5px 8px;
+                                vertical-align: top;
+                            }
+                            .tax-prod-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                border: 1px solid #000;
+                                margin-bottom: 8px;
+                            }
+                            .tax-prod-table th {
+                                border: 1px solid #000;
+                                padding: 6px 4px;
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 11px;
+                            }
+                            .tax-prod-table td {
+                                border: 1px solid #000;
+                                padding: 5px 6px;
+                                font-size: 11px;
+                            }
+                            .text-right-custom {
+                                text-align: right;
+                            }
+                            .text-center-custom {
+                                text-align: center;
+                            }
+                            .title-box {
+                                border: 1px solid #000;
+                                display: inline-block;
+                                padding: 3px 18px;
+                                font-weight: bold;
+                                font-size: 13px;
+                                margin-bottom: 10px;
+                            }
+                        </style>
+
+                        <!-- Header Title Box -->
+                        <div class="text-center-custom" style="margin-top: 5px; margin-bottom: 12px;">
+                            <div class="title-box">
+                                <span t-if="o.move_type == 'out_refund'">TAX CREDIT NOTE</span>
+                                <span t-elif="o.move_type == 'in_refund'">VENDOR TAX CREDIT NOTE</span>
+                                <span t-elif="o.move_type == 'in_invoice'">VENDOR TAX BILL</span>
+                                <span t-else="">TAX INVOICE</span>
+                            </div>
+                        </div>
+
+                        <!-- Metadata Grid Table -->
+                        <table class="tax-inv-table">
+                            <tr>
+                                <td style="width: 50%;">
+                                    <strong>Date of Invoice: </strong>
+                                    <span t-field="o.invoice_date" t-options='{"widget": "date", "format": "MM/dd/yyyy"}'/>
+                                </td>
+                                <td style="width: 50%;">
+                                    <strong>Tax Invoice No. : </strong>
+                                    <span t-field="o.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="height: 120px; vertical-align: top;">
+                                    <strong>Supplier's TIN : </strong>
+                                    <span t-field="o.company_id.vat"/><br/>
+                                    <strong>Supplier's Name : </strong>
+                                    <span t-field="o.company_id.name"/><br/>
+                                    <strong>Address : </strong>
+                                    <span t-esc="', '.join(filter(None, [o.company_id.street, o.company_id.street2, o.company_id.city, o.company_id.state_id.name, o.company_id.zip]))"/><br/><br/>
+                                    <strong>Telephone No. : </strong>
+                                    <span t-field="o.company_id.phone"/>
+                                </td>
+                                <td style="height: 120px; vertical-align: top;">
+                                    <strong>Purchaser's TIN : </strong>
+                                    <span t-field="o.partner_id.vat"/><br/>
+                                    <strong>Purchaser's Name : </strong>
+                                    <span t-field="o.partner_id.name"/><br/>
+                                    <strong>Address : </strong>
+                                    <span t-esc="', '.join(filter(None, [o.partner_id.street, o.partner_id.street2, o.partner_id.city, o.partner_id.state_id.name, o.partner_id.zip]))"/><br/><br/>
+                                    <strong>Telephone No. : </strong>
+                                    <span t-esc="o.partner_id.phone or o.partner_id.mobile or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Date of Supply : </strong>
+                                    <span t-field="o.invoice_date" t-options='{"widget": "date", "format": "MM/dd/yyyy"}'/>
+                                </td>
+                                <td>
+                                    <strong>Place of Supply : </strong>
+                                    <span t-esc="', '.join(filter(None, [o.company_id.street, o.company_id.city]))"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <strong>Additional Information if any : </strong>
+                                    <span t-esc="o.ref or o.narration or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Products Table -->
+                        <table class="tax-prod-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 14%; text-align: left;">Reference</th>
+                                    <th style="width: 44%; text-align: left;">Description of Goods or Services</th>
+                                    <th style="width: 12%; text-align: right;">Quantity</th>
+                                    <th style="width: 12%; text-align: right;">Unit<br/>Price</th>
+                                    <th style="width: 18%; text-align: right;">Amount<br/>Excluding VAT<br/>(Rs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                    <tr t-if="line.display_type in ('product', False) or not line.display_type">
+                                        <td>
+                                            <span t-esc="line.product_id.default_code or ''"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.name"/>
+                                        </td>
+                                        <td class="text-right-custom">
+                                            <span t-esc="'%.2f' % line.quantity"/>
+                                        </td>
+                                        <td class="text-right-custom">
+                                            <span t-esc="'{:,.2f}'.format(line.price_unit)"/>
+                                        </td>
+                                        <td class="text-right-custom">
+                                            <span t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-elif="line.display_type == 'line_section'" class="bg-200 fw-bold">
+                                        <td colspan="5"><span t-field="line.name"/></td>
+                                    </tr>
+                                    <tr t-elif="line.display_type == 'line_note'" class="fst-italic">
+                                        <td colspan="5"><span t-field="line.name"/></td>
+                                    </tr>
+                                </t>
+                                <!-- Total Value of Supply Row -->
+                                <tr>
+                                    <td colspan="4" style="font-weight: bold; padding-left: 6px;">
+                                        Total Value of Supply:
+                                    </td>
+                                    <td class="text-right-custom" style="font-weight: bold;">
+                                        <span t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
+                                    </td>
+                                </tr>
+                                <!-- Global Discount if any -->
+                                <tr t-if="o.total_global_discount &gt; 0.0">
+                                    <td colspan="4" style="font-weight: bold; padding-left: 6px;">
+                                        Global Discount:
+                                    </td>
+                                    <td class="text-right-custom" style="font-weight: bold;">
+                                        <span t-esc="'{:,.2f}'.format(o.total_global_discount)"/>
+                                    </td>
+                                </tr>
+                                <!-- VAT Amount Row -->
+                                <tr>
+                                    <td colspan="4" style="font-weight: bold; padding-left: 6px;">
+                                        <span>VAT Amount (Total Value of Supply @ <t t-if="o.vat_rate_display"><span t-field="o.vat_rate_display"/></t><t t-else="">VAT Rate</t>)</span>
+                                    </td>
+                                    <td class="text-right-custom" style="font-weight: bold;">
+                                        <span t-esc="'{:,.2f}'.format(o.amount_tax)"/>
+                                    </td>
+                                </tr>
+                                <!-- Total Amount / consideration including VAT Row -->
+                                <tr>
+                                    <td colspan="4" style="font-weight: bold; padding-left: 6px;">
+                                        Total Amount/consideration including VAT:
+                                    </td>
+                                    <td class="text-right-custom" style="font-weight: bold;">
+                                        <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Amount in Words and Mode of Payment -->
+                        <table class="tax-inv-table">
+                            <tr>
+                                <td>
+                                    <strong>Total Amount in words: </strong>
+                                    <span t-esc="o.currency_id.amount_to_text(o.amount_total) if o.currency_id else ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Mode of Payment: </strong>
+                                    <span t-esc="o.payment_mode_id.name or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+            <t t-else="">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: black; line-height: 1.35; padding: 15px;">
+                        <style>
+                            .nonvat-meta-table {
+                                width: 100%;
+                                margin-top: 15px;
+                                margin-bottom: 15px;
+                            }
+                            .nonvat-meta-table td {
+                                vertical-align: top;
+                                font-size: 11px;
+                            }
+                            .nonvat-prod-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                border: 1px solid #000;
+                                margin-bottom: 0px;
+                            }
+                            .nonvat-prod-table th {
+                                border: 1px solid #000;
+                                padding: 6px 6px;
+                                font-weight: bold;
+                                font-size: 11px;
+                                text-transform: uppercase;
+                            }
+                            .nonvat-prod-table td {
+                                border: 1px solid #000;
+                                padding: 5px 6px;
+                                font-size: 11px;
+                            }
+                            .nonvat-total-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                border: 1px solid #000;
+                                border-top: none;
+                                margin-bottom: 15px;
+                            }
+                            .nonvat-total-table td {
+                                border: 1px solid #000;
+                                padding: 6px 10px;
+                                font-size: 11px;
+                                font-weight: bold;
+                            }
+                            .text-right-custom {
+                                text-align: right;
+                            }
+                            .text-center-custom {
+                                text-align: center;
+                            }
+                        </style>
+
+                        <div class="row" style="margin-bottom: 20px;">
+                            <div class="col-7">
+                                <h3 style="font-weight: bold; margin: 0; font-size: 18px; color: #000;">
+                                    <span>NJC Foods Pvt Ltd</span>
+                                </h3>
+                                <p style="margin: 3px 0 0 0; font-size: 11px; color: #333;">
+                                    <span>No.118C, Pamunugama Road, Delathura, Ja-Ela</span>
+                                </p>
+                            </div>
+                            <div class="col-5" style="text-align: left; padding-left: 20px;">
+                                <t t-if="any(l.price_unit != 0.0 for l in o.invoice_line_ids.filtered(lambda l: l.display_type in ('product', False) or not l.display_type))">
+                                    <div style="font-size: 11px;">
+                                        <strong style="font-size: 12px; text-transform: uppercase;">
+                                            <span t-field="o.partner_id.name"/>
+                                        </strong><br/>
+                                        <span t-if="o.partner_id.street" t-field="o.partner_id.street"/><br t-if="o.partner_id.street"/>
+                                        <span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/><br t-if="o.partner_id.street2"/>
+                                        <span t-if="o.partner_id.city" t-field="o.partner_id.city"/><br t-if="o.partner_id.city"/>
+                                        <span t-if="o.partner_id.country_id" t-field="o.partner_id.country_id.name"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; margin-bottom: 12px;">
+                            <h2 style="font-weight: bold; margin: 0; font-size: 20px; color: #000;">
+                                <span t-if="o.move_type == 'out_refund'">Credit Note </span>
+                                <span t-elif="o.move_type == 'in_refund'">Vendor Credit Note </span>
+                                <span t-elif="o.move_type == 'in_invoice'">Vendor Bill </span>
+                                <span t-else="">Invoice </span>
+                                <span t-field="o.name"/>
+                            </h2>
+                        </div>
+
+                        <table class="nonvat-meta-table">
+                            <tr>
+                                <td style="width: 35%;">
+                                    <strong>Invoice Date:</strong><br/>
+                                    <span t-field="o.invoice_date" t-options='{"widget": "date", "format": "MM/dd/yyyy"}'/>
+                                </td>
+                                <td style="width: 35%;">
+                                    <strong>Due Date:</strong><br/>
+                                    <span t-field="o.invoice_date_due" t-options='{"widget": "date", "format": "MM/dd/yyyy"}'/>
+                                </td>
+                                <td style="width: 30%;">
+                                    <strong>Source:</strong><br/>
+                                    <span t-esc="o.invoice_origin or o.ref or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="nonvat-prod-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 44%; text-align: left;">DESCRIPTION</th>
+                                    <th style="width: 14%; text-align: right;">QUANTITY</th>
+                                    <th style="width: 14%; text-align: right;">UNIT PRICE</th>
+                                    <th style="width: 10%; text-align: center;">TAXES</th>
+                                    <th style="width: 18%; text-align: right;">AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                    <tr t-if="line.display_type in ('product', False) or not line.display_type">
+                                        <td>
+                                            <span t-field="line.name"/>
+                                        </td>
+                                        <td class="text-right-custom">
+                                            <span t-esc="'%.2f' % line.quantity"/>
+                                        </td>
+                                        <td class="text-right-custom">
+                                            <span t-esc="'{:,.2f}'.format(line.price_unit)"/>
+                                        </td>
+                                        <td class="text-center-custom">
+                                            <span t-esc="', '.join(line.tax_ids.mapped('name')) or ''"/>
+                                        </td>
+                                        <td class="text-right-custom">
+                                            <span t-esc="'{:,.2f} Rs'.format(line.price_subtotal)"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-elif="line.display_type == 'line_section'" class="bg-200 fw-bold">
+                                        <td colspan="5"><span t-field="line.name"/></td>
+                                    </tr>
+                                    <tr t-elif="line.display_type == 'line_note'" class="fst-italic">
+                                        <td colspan="5"><span t-field="line.name"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <table class="nonvat-total-table">
+                            <tr t-if="o.total_global_discount &gt; 0.0">
+                                <td style="width: 82%; text-align: left;">Global Discount</td>
+                                <td style="width: 18%; text-align: right;"><span t-esc="'{:,.2f} Rs'.format(o.total_global_discount)"/></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 82%; text-align: left;">Total</td>
+                                <td style="width: 18%; text-align: right;">
+                                    <span t-esc="'{:,.2f} Rs'.format(o.amount_total)"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top: 20px; font-size: 11px; line-height: 1.5;">
+                            <p style="margin: 0;">
+                                <strong>Please use the following communication for your payment : </strong>
+                                <span><span t-esc="o.payment_reference or o.name"/></span>
+                            </p>
+                            <p style="margin: 0;" t-if="o.invoice_payment_term_id">
+                                <strong>Payment terms: </strong>
+                                <span t-esc="o.invoice_payment_term_id.name"/>
+                            </p>
+                            <p style="margin: 0;">
+                                <strong>Cheque to written in Favour of </strong>
+                                <span>NJC Foods Pvt Ltd</span>
+                            </p>
+                        </div>
+
+                        <div class="row" style="margin-top: 35px; font-size: 11px;">
+                            <div class="col-6">
+                                <strong>Prepared By:</strong> ___________________________________
+                            </div>
+                            <div class="col-6">
+                                <strong>Checked By:</strong> ___________________________________
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 30px; text-align: center; font-size: 11px;">
+                            <span>Received the above goods in correct quantity and good condition</span>
+                        </div>
+
+                        <div class="row" style="margin-top: 30px; font-size: 11px;">
+                            <div class="col-6">
+                                <strong>Received By:</strong> ___________________________________
+                            </div>
+                            <div class="col-6">
+                                <strong>Date:</strong> ___________________________
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 60px; border-top: 1.5px solid #000; padding-top: 8px; text-align: center; font-size: 10px;">
+                            <div>
+                                <span t-esc="o.company_id.email or ''"/> 
+                                <span t-if="o.company_id.website"> </span>
+                                <span t-esc="o.company_id.website or ''"/>
+                            </div>
+                            <div style="margin-top: 3px;">
+                                <span>Page: <span class="page"/> / <span class="topage"/></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>
